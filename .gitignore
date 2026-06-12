@@ -1,0 +1,12 @@
+# R generated files
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+
+# Data files (often too large for GitHub free tier)
+data/raw/*.csv
+data/processed/*.csv
+
+# Output figures (regeneratable from scripts)
+outputs/figures/
