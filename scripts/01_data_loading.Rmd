@@ -1,0 +1,41 @@
+---
+title: "01 Data Loading and Exploration"
+author: "Tami Bolodeoku & Carrick Davis"
+date: "`r Sys.Date()`"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+## Introduction
+
+This analysis uses the OASIS longitudinal dataset to examine whether normalised whole brain volume (nWBV) declines over time, and whether this decline differs between individuals with and without dementia. The dataset includes 373 MRI observations from 150 older adults across up to 5 visits.
+
+## Load Data
+
+```{r load}
+library(tidyverse)
+library(here)
+
+oasis <- read_csv(here("data", "raw", "oasis_longitudinal.csv"))
+
+glimpse(oasis)
+```
+
+## Brain Volume Trajectories
+
+```{r plot}
+ggplot(oasis, aes(x = `MR Delay`, y = nWBV, colour = Group)) +
+  geom_line(aes(group = `Subject ID`), alpha = 0.3) +
+  geom_smooth(method = "lm", se = FALSE, linewidth = 1.5) +
+  labs(
+    title = "Brain Volume Over Time by Group",
+    x = "Days since first visit",
+    y = "Normalised Whole Brain Volume (nWBV)"
+  ) +
+  theme_minimal()
+```
+
+Each thin line represents one participant tracked over time. The thicker lines show the average trend per group. The demented group shows the steepest decline in brain volume over time.
