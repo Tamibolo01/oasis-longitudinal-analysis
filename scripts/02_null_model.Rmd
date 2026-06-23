@@ -1,0 +1,44 @@
+---
+title: "02 Null Model and ICC"
+author: "Tami Bolodeoku & Carrick Davis"
+date: "⁠ r Sys.Date() ⁠"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+
+```{r load, include=FALSE}
+library(tidyverse)
+library(lme4)
+library(lmerTest)
+library(here)
+
+oasis <- read_csv(here("data", "raw", "oasis_longitudinal.csv"))
+```
+
+## Null Model
+
+Before adding any predictors we fit a null model. This estimates the overall average brain volume and partitions variance between and within individuals. It has no predictors — it is simply asking: how much do people differ from each other in brain volume?
+
+
+```{r null_model}
+null_model <- lmer(nWBV ~ 1 + (1 | `Subject ID`), data = oasis)
+summary(null_model)
+```
+
+
+## Intraclass Correlation Coefficient (ICC)
+
+The ICC tells us what proportion of the total variance in brain volume is due to differences between people rather than changes within a person over time.
+
+```{r}
+var_components <- as.data.frame(VarCorr(null_model))
+between_var <- var_components$vcov[1]
+within_var  <- var_components$vcov[2]
+
+icc <- between_var / (between_var + within_var)
+cat("ICC =", round(icc, 3))
+```
